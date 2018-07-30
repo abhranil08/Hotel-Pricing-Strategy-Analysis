@@ -1,0 +1,288 @@
+---
+title: "Hotel Pricing Capstone Project"
+author: "Abhranil Bhattacharjee"
+Email: "abhra.tb@gmail.com"
+College: " Jadavpur University, Kolkata."
+date: "February 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Email: abhra.tb@gmail.com
+##College: Jadavpur University, Kolkata.
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+cities.df <- read.csv(paste(file = "Cities42.csv", sep = " "))
+View(cities.df)
+```
+
+##summarze the data
+```{r}
+
+library(psych)
+describe(cities.df)
+```
+##dimensions of dataset
+```{r}
+dim(cities.df)
+```
+##To get clear visualization by city name.
+```{r}
+table(cities.df$CityName)
+```
+##one-way contingency tables for the categorical variables in your dataset.:-
+
+```{r}
+
+mytable2<-with(cities.df,table(IsTouristDestination))
+View(mytable2)
+round(prop.table(mytable2)*100,2)
+```
+
+```{r}
+
+mytable3<-with(cities.df,table(IsWeekend))
+View(mytable3)
+round(prop.table(mytable3)*100,2)
+```
+
+```{r}
+mytable4<-with(cities.df,table(IsNewYearEve))
+View(mytable4)
+round(prop.table(mytable4)*100,2)
+```
+
+```{r}
+mytable5<-with(cities.df,table(StarRating))
+View(mytable5)
+round(prop.table(mytable5)*100,2)
+```
+
+```{r}
+mytable6<-with(cities.df,table(FreeWifi))
+View(mytable6)
+round(prop.table(mytable6)*100,2)
+```
+
+```{r}
+mytable7<-with(cities.df,table(FreeBreakfast))
+View(mytable7)
+round(prop.table(mytable7)*100,2)
+```
+
+```{r}
+mytable8<-with(cities.df,table(HasSwimmingPool))
+View(mytable8)
+round(prop.table(mytable8)*100,2)
+```
+
+```{r}
+mytable9<-with(cities.df,table(CityName))
+View(mytable9)
+round(prop.table(mytable9)*100,2)
+```
+
+##Two-way contingency tables for the categorical variables in your dataset:-
+
+```{r}
+library(gmodels)
+CrossTable(cities.df$IsMetroCity,cities.df$IsTouristDestination)
+```
+
+```{r}
+CrossTable(cities.df$IsWeekend,cities.df$IsNewYearEve)
+```
+
+```{r}
+CrossTable(cities.df$FreeWifi,cities.df$FreeBreakfast)
+```
+
+```{r}
+CrossTable(cities.df$FreeWifi,cities.df$HasSwimmingPool)
+```
+## Boxplots
+```{r}
+boxplot(cities.df$CityRank  , horizontal =TRUE,main="Rank of the cities")
+
+boxplot(cities.df$RoomRent ~ cities.df$IsWeekend, horizontal=TRUE,ylab=" notWeekend=0 and weekend=1 ", xlab="RoomRents", las=1,main="Analysis of Roomrent on weekends",col=c("black","white"))
+
+boxplot(cities.df$RoomRent ~ cities.df$IsMetroCity, horizontal=TRUE,ylab="City (metro=1,other=0) ", xlab="Room rent", las=1,main="Analysis of type of city and room rent of hotels",col=c("black","white"))
+
+boxplot(cities.df$RoomRent ~ cities.df$HasSwimmingPool, horizontal=TRUE,main="Analysis of Room Rent depending on Swimming Pool",ylab="Swimming Pool ( YES=1, NO=0)",las=1,xlab="Room rent")
+
+boxplot(cities.df$RoomRent ~ cities.df$FreeWifi, horizontal=TRUE,main="Analysis of Room Rent depending on Wifi Availabiliy ",ylab=" Free Wifi ( YES=1, NO=0)",las=1,xlab="Room rent")
+
+boxplot(cities.df$StarRating ~ cities.df$FreeBreakfast, horizontal=TRUE,ylab="breakfast avalability", xlab="Star ratings", las=1,main="Analysis of star rating and breakfast avalability")
+
+boxplot(cities.df$StarRating ~ cities.df$HasSwimmingPool, horizontal=TRUE,ylab="swimming pool avalability", xlab="Star ratings", las=1,main="Analysis of star rating and swimming pool avalability")
+```
+
+## Analysis of star rating of hotel
+```{r}
+hist(cities.df$StarRating,main="Analysis of star ratings of hotels",xlab="Star ratings", ylab="frequency", breaks=5, col="purple", freq=TRUE)
+```
+
+##analysis of distance of airport from hotel
+
+```{r}
+hist(cities.df$Airport,
+          xlab="Distance from Airport", col="purple",main="Distribution of distance to the nearest major airport", ylim = c(0,8000))
+```
+
+## anaysis of hotel capacity on pricing
+
+```{r}
+hist(cities.df$HotelCapacity,
+          xlab="Hotel Capacity", main="Distribution of capacity of Hotels",ylim=c(0,9000),col="purple")
+```
+##Scatterplots
+```{r}
+library(car)
+scatterplot(RoomRent~StarRating,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Star Rating vs Room rent",ylab="Room Rent", xlab="Star Rating")
+
+scatterplot(RoomRent~Airport,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Airport(distance) vs Room rent",ylab="Room Rent", xlab="Airport(distance)")
+
+scatterplot(RoomRent~HotelCapacity,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Hotel Capacity vs Room rent",ylab="Room Rent", xlab="Hotel Capacity")
+
+#scatterplot(RoomRent~cityRank,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of City rank vs Room rent", ylab="Room Rent",xlab="Rank of City")
+
+#scatterplot(Population~cityRank,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of City rank vs Population", ylab="Population",xlab="Rank of City")
+
+
+
+
+```
+
+##Corrgram
+```{r}
+library(corrgram)
+corrgram(cities.df, lower.panel = panel.shade, upper.panel = panel.pie, text.panel = panel.txt, main = "Corrgram of all  variables")
+```
+
+## Correlation matrix
+
+```{r}
+cor.df <- cities.df[, c(2,3,4,5,6,7,10,11,12,18)]
+cor(cor.df)
+```
+# RoomRent and istouristdestination, starRating, hotelCapacity are highly correlated. So prices peak due to these factors. RoomRent and population,IsMetroCity are negatively correlated.  
+
+## OLS model
+```{r}
+# OLS Model
+fit<- glm(RoomRent ~HasSwimmingPool+IsNewYearEve+IsTouristDestination+IsMetroCity+StarRating+Airport+HotelCapacity+FreeWifi+FreeBreakfast, data = cities.df)
+summary(fit)
+```
+
+```{r}
+par(mfrow= c(1,2))
+plot(cities.df$RoomRent ~ cities.df$Airport, ylim= c(100 , 75000) , xlim=c(1,50) , main="RoomRent vs Airport")
+```
+
+```{r}
+
+plot(cities.df$RoomRent ~ cities.df$StarRating , main= " RoomRent vs Starrating" ,ylab= "Room Rent" , xlab="StarRating")
+```
+
+## cor test between RoomRent and IsTouristDestnation
+```{r}
+cor.test(cities.df$RoomRent,cities.df$IsTouristDestination)
+```
+
+## Cor test between StarRating and RoomRent
+
+```{r}
+cor.test(cities.df$RoomRent,cities.df$StarRating)
+```
+
+## Cor test between HotelCapacity and RoomRent
+
+```{r}
+cor.test(cities.df$RoomRent, cities.df$HotelCapacity)
+```
+
+## T- test between RoomRent and HasSwimmingPool
+2 Tail test
+Ho:-There is no significant difference between the Room Rent of Hotels with swimmin pool and hotels without swimmin pool
+H1:-There is a significant difference between the Room Rent of Hotels with swimmin pool and hotels without swimmin pool
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$HasSwimmingPool==0],cities.df$RoomRent[cities.df$HasSwimmingPool==1])
+```
+
+Inference: Since p value < .05, we reject null hypothesis H0 and accept that there is a significant difference bewtween the RoomRent of hotels with swimming pool and hotels without swimming pool.
+
+## T-test between RoomRent and FreeWifi
+Ho:-There is no significant difference between the Room Rent of Hotels providing free wifi and those which do not
+H1:-There is a significant difference between the Room Rent of Hotels providing free wifi and those which do not
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$FreeWifi==0],cities.df$RoomRent[cities.df$FreeWifi==1])
+```
+
+## T-test between RoomRent and FreeBreakfast
+Ho: There is no significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast.
+H1: There is a significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$FreeBreakfast==0],cities.df$RoomRent[cities.df$FreeBreakfast==1])
+```
+
+Inference: Since p-value>0.05, we accept H0,hence, There is no significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast.
+
+## T-test between RoomRent and IsNewYearEve
+Ho: There is no significant difference between the Room Rent of Hotels on normal Eve and New Year’s Eve.
+H1: The Room Rents of Hotels on normal Eve are cheaper than that on New Year’s Eve
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsNewYearEve==0],cities.df$RoomRent[cities.df$IsNewYearEve==1],alternative = "less")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room Rents of Hotels on normal Eve are cheaper than that on New Year’s Eve.
+
+## T-test between RoomRent and IsWeekend
+Ho:-There is no significant difference between the Room Rent of Hotels on weekdays and weekends.
+H1:-There is a significant difference between the Room Rent of Hotels on weekdays and weekends.
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsWeekend==0],cities.df$RoomRent[cities.df$IsWeekend==1])
+```
+
+Inference:-Since p-vale>0.05, we accept Ho,hence there is no significant difference between the Room Rent of Hotels on weekdays and weekends.
+
+## T-test between RoomRent and IsTouristDestination
+Ho: There is no significant difference between the Room Rent of Hotels in Tourist destinations and non tourist destinations.
+H1: The Room Rents of Hotels in Tourist destinations are greater than that in non tourist destinations
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsTouristDestination==0],cities.df$RoomRent[cities.df$IsTouristDestination==1],alternative = "less")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room.Rents of Hotels in Tourist destinations are greater than that in non tourist destinations
+
+## T-test between RoomRent and IsMetroCity
+Ho: There is no significant difference between the Room Rent of Hotels in non-metro cities and metro cities.
+H1: The Room Rent of hotels in non-metro cities are more expensive than that in metro cities.
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsMetroCity==0],cities.df$RoomRent[cities.df$IsMetroCity==1],alternative = "greater")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room Rents of Hotels in non-metro cities is more than that of metro cities.
+
+## Inferences:-From the above t-test,we may infer that the followinf variables are significant
+
+1.HasSwimmingPool 
+2.IsNewYearEve 
+3.IsTouristDestination 
+4.IsMetroCity
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

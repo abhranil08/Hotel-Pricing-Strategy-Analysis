@@ -1,0 +1,379 @@
+---
+title: "Hotel Pricing Capstone Project"
+author: "Abhranil Bhattacharjee"
+Email: "abhra.tb@gmail.com"
+College: " Jadavpur University, Kolkata."
+date: "February 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Email: abhra.tb@gmail.com
+##College: Jadavpur University, Kolkata.
+## INTRODUCTION
+The purpose of this project is to analyze the pricing strategy of hotels in the Indian hotel industry.Many factors drive hotel room prices which are primarily of two types: external and internal. The objective of this project is to identify the factors that matter the most.
+
+##LITERATURE REVIEW
+The particular objective of this Study was to analyze the pricing strategy of hotels in the Indian hotel industry.Our aim was to compare the room rents of hotels for 8 days in 42 cities with the description provided in the dataset.Based on them we did some T-tests and correlation test to identify the significance of different variables and that which variable(s) acted as driving force to any changes in the same.We tried to explore the differences in price based on weekends(if the date lies on Saturday or Sunday), holidays(New Year Eve), Metro city, distance from the airport, the presence of swimming pools, Free wifi, free breakfast and so on.The tests helped us determine that which factor(s) related the price of hotel rooms positively and which affect negatively. Based on the tests, we also fitted in a regression model with respect to the variables which may be used to predict the room rent of the hotels or in short, the more significant variables.
+
+##DATA DESCRIPTION
+**DEPENDENT VARIABLE**
+
+ROOMRENT- Rent for the cheapest room, double occupancy, in Indian Rupees. 
+
+Some hotels have more than one type of double occupancy room. For simplicity, we picked the cheapest room with double occupancy.
+
+**EXTERNAL FACTORS**
+
+DATE- We have hotel room rent data for the following 8 dates for each hotel:
+{Dec 31, Dec 25, Dec 24, Dec 18, Dec 21, Dec 28, Jan 4, Jan 8}
+If a hotel is sold out on a given date, assume that the price of the hotel room on the date it is sold out is the maximum price from the sample of dates for which prices are available.
+
+IsWeekend-We use ‘0’ to indicate week days, ‘1’ to indicate weekend dates (Sat / Sun)
+
+IsNewYearEve-‘1’ for Dec 31, ‘0’ otherwise
+
+CityName-Name of the City where the Hotel is located   e.g. Mumbai
+
+Population-Population of the City in 2011.
+
+CityRank-Rank order of City by Population (e.g. Mumbai = 0, Delhi = 1, so on.
+
+IsMetroCity-‘1’ if CityName is {Mumbai, Delhi, Kolkatta, Chennai}, ‘0’ otherwise.
+
+IsTouristDestination-We use ‘1’ if the city is primarily a tourist destination, ‘0’ otherwise. For example, Goa and Agra are primarily tourist destinations. We assume that most people who visit Goa and Agra and stay in their hotels are in these cities primarily for tourism. 
+
+**INTERNAL FACTORS**
+
+HotelName- e.g. Park Hyatt Goa Resort and Spa
+
+StarRating- e.g. 5
+
+AIRPORT- Distance between Hotel and closest major Airport
+
+HotelAddress- e.g. Arrossim Beach, Cansaulim, Goa
+
+HotelPincode- e.g . 403712
+
+HotelDescription- e.g. 5-star beachfront resort with spa, near Arossim Beach
+
+FreeWifi- ‘1’ if the hotel offers Free Wifi, ‘0’ otherwise
+
+FreeBreakfast- ‘1’ if the hotel offers Free Breakfast, ‘0’ otherwise
+
+HotelCapacity- e.g. 242.  (enter ‘0’ if not available)
+
+HasSwimmingPool- ‘1’ if they have a swimming pool, ‘0’ otherwise
+
+##MODEL ANALYSIS
+The dataset was read into R. The data was summarized to understand the mean, median, standard deviation of eachvariable. The problem was formulated as Y = F(x1, x2, x3..)The Dependent Variable(s) (i.e. the Y in the Y = F(x)) in the Dataset was identified as RoomRent. 
+
+```{r}
+hotelprice=read.csv(paste("Cities42.csv",sep=""))
+summary(lm(RoomRent ~HasSwimmingPool+IsNewYearEve+IsTouristDestination+IsMetroCity+StarRating+Airport+HotelCapacity+FreeWifi+FreeBreakfast, data = hotelprice))
+
+```
+```{r}
+cities.df <- read.csv(paste(file = "Cities42.csv", sep = " "))
+View(cities.df)
+```
+
+
+##APPENDICES 
+
+
+
+```{r}
+
+library(psych)
+describe(cities.df)
+```
+##Dataset
+```{r}
+dim(cities.df)
+```
+##Visualization by city name.
+```{r}
+table(cities.df$CityName)
+```
+##one-way contingency tables:
+```{r}
+
+mytable2<-with(cities.df,table(IsTouristDestination))
+View(mytable2)
+round(prop.table(mytable2)*100,2)
+```
+
+```{r}
+
+mytable3<-with(cities.df,table(IsWeekend))
+View(mytable3)
+round(prop.table(mytable3)*100,2)
+```
+
+```{r}
+mytable4<-with(cities.df,table(IsNewYearEve))
+View(mytable4)
+round(prop.table(mytable4)*100,2)
+```
+
+```{r}
+mytable5<-with(cities.df,table(StarRating))
+View(mytable5)
+round(prop.table(mytable5)*100,2)
+```
+
+```{r}
+mytable6<-with(cities.df,table(FreeWifi))
+View(mytable6)
+round(prop.table(mytable6)*100,2)
+```
+
+```{r}
+mytable7<-with(cities.df,table(FreeBreakfast))
+View(mytable7)
+round(prop.table(mytable7)*100,2)
+```
+
+```{r}
+mytable8<-with(cities.df,table(HasSwimmingPool))
+View(mytable8)
+round(prop.table(mytable8)*100,2)
+```
+
+```{r}
+mytable9<-with(cities.df,table(CityName))
+View(mytable9)
+round(prop.table(mytable9)*100,2)
+```
+
+##Two-way contingency tables:
+
+```{r}
+library(gmodels)
+CrossTable(cities.df$IsMetroCity,cities.df$IsTouristDestination)
+```
+
+```{r}
+CrossTable(cities.df$IsWeekend,cities.df$IsNewYearEve)
+```
+
+```{r}
+CrossTable(cities.df$FreeWifi,cities.df$FreeBreakfast)
+```
+
+```{r}
+CrossTable(cities.df$FreeWifi,cities.df$HasSwimmingPool)
+```
+## Boxplots
+```{r}
+boxplot(cities.df$CityRank  , horizontal =TRUE,main="Rank of the cities")
+
+boxplot(cities.df$RoomRent ~ cities.df$IsWeekend, horizontal=TRUE,ylab=" notWeekend=0 and weekend=1 ", xlab="RoomRents", las=1,main="Analysis of Roomrent on weekends",col=c("black","white"))
+
+boxplot(cities.df$RoomRent ~ cities.df$IsMetroCity, horizontal=TRUE,ylab="City (metro=1,other=0) ", xlab="Room rent", las=1,main="Analysis of type of city and room rent of hotels",col=c("black","white"))
+
+boxplot(cities.df$RoomRent ~ cities.df$HasSwimmingPool, horizontal=TRUE,main="Analysis of Room Rent depending on Swimming Pool",ylab="Swimming Pool ( YES=1, NO=0)",las=1,xlab="Room rent")
+
+boxplot(cities.df$RoomRent ~ cities.df$FreeWifi, horizontal=TRUE,main="Analysis of Room Rent depending on Wifi Availabiliy ",ylab=" Free Wifi ( YES=1, NO=0)",las=1,xlab="Room rent")
+
+boxplot(cities.df$StarRating ~ cities.df$FreeBreakfast, horizontal=TRUE,ylab="breakfast avalability", xlab="Star ratings", las=1,main="Analysis of star rating and breakfast avalability")
+
+boxplot(cities.df$StarRating ~ cities.df$HasSwimmingPool, horizontal=TRUE,ylab="swimming pool avalability", xlab="Star ratings", las=1,main="Analysis of star rating and swimming pool avalability")
+```
+
+## Analysis of star rating of hotel
+```{r}
+hist(cities.df$StarRating,main="Analysis of star ratings of hotels",xlab="Star ratings", ylab="frequency", breaks=5, col="purple", freq=TRUE)
+```
+
+##Analysis of distance of airport from hotel
+
+```{r}
+hist(cities.df$Airport,
+          xlab="Distance from Airport", col="purple",main="Distribution of distance to the nearest major airport", ylim = c(0,8000))
+```
+
+## Anaysis of hotel capacity on pricing
+
+```{r}
+hist(cities.df$HotelCapacity,
+          xlab="Hotel Capacity", main="Distribution of capacity of Hotels",ylim=c(0,9000),col="purple")
+```
+##Scatterplots
+```{r}
+library(car)
+scatterplot(RoomRent~StarRating,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Star Rating vs Room rent",ylab="Room Rent", xlab="Star Rating")
+
+scatterplot(RoomRent~Airport,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Airport(distance) vs Room rent",ylab="Room Rent", xlab="Airport(distance)")
+
+scatterplot(RoomRent~HotelCapacity,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of Hotel Capacity vs Room rent",ylab="Room Rent", xlab="Hotel Capacity")
+
+#scatterplot(RoomRent~cityRank,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of City rank vs Room rent", ylab="Room Rent",xlab="Rank of City")
+
+#scatterplot(Population~cityRank,data=cities.df,spread=FALSE, smoother.args=list(lty=2),main="Scatter plot of City rank vs Population", ylab="Population",xlab="Rank of City")
+
+
+
+
+```
+
+##Corrgram
+```{r}
+library(corrgram)
+corrgram(cities.df, lower.panel = panel.shade, upper.panel = panel.pie, text.panel = panel.txt, main = "Corrgram of all  variables")
+```
+
+## Correlation matrix
+
+```{r}
+cor.df <- cities.df[, c(2,3,4,5,6,7,10,11,12,18)]
+cor(cor.df)
+```
+# RoomRent and istouristdestination, starRating, hotelCapacity are highly correlated. So prices peak due to these factors. RoomRent and population,IsMetroCity are negatively correlated.  
+
+## OLS model
+```{r}
+# OLS Model
+fit<- glm(RoomRent ~HasSwimmingPool+IsNewYearEve+IsTouristDestination+IsMetroCity+StarRating+Airport+HotelCapacity+FreeWifi+FreeBreakfast, data = cities.df)
+summary(fit)
+```
+
+```{r}
+par(mfrow= c(1,2))
+plot(cities.df$RoomRent ~ cities.df$Airport, ylim= c(100 , 75000) , xlim=c(1,50) , main="RoomRent vs Airport")
+```
+
+```{r}
+
+plot(cities.df$RoomRent ~ cities.df$StarRating , main= " RoomRent vs Starrating" ,ylab= "Room Rent" , xlab="StarRating")
+```
+
+## cor test between RoomRent and IsTouristDestnation
+```{r}
+cor.test(cities.df$RoomRent,cities.df$IsTouristDestination)
+```
+
+## Cor test between StarRating and RoomRent
+
+```{r}
+cor.test(cities.df$RoomRent,cities.df$StarRating)
+```
+
+## Cor test between HotelCapacity and RoomRent
+
+```{r}
+cor.test(cities.df$RoomRent, cities.df$HotelCapacity)
+```
+
+## T- test between RoomRent and HasSwimmingPool
+2 Tail test
+Ho:-There is no significant difference between the Room Rent of Hotels with swimmin pool and hotels without swimmin pool
+H1:-There is a significant difference between the Room Rent of Hotels with swimmin pool and hotels without swimmin pool
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$HasSwimmingPool==0],cities.df$RoomRent[cities.df$HasSwimmingPool==1])
+```
+
+Inference: Since p value < .05, we reject null hypothesis H0 and accept that there is a significant difference bewtween the RoomRent of hotels with swimming pool and hotels without swimming pool.
+
+## T-test between RoomRent and FreeWifi
+Ho:-There is no significant difference between the Room Rent of Hotels providing free wifi and those which do not
+H1:-There is a significant difference between the Room Rent of Hotels providing free wifi and those which do not
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$FreeWifi==0],cities.df$RoomRent[cities.df$FreeWifi==1])
+```
+
+## T-test between RoomRent and FreeBreakfast
+Ho: There is no significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast.
+H1: There is a significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$FreeBreakfast==0],cities.df$RoomRent[cities.df$FreeBreakfast==1])
+```
+
+Inference: Since p-value>0.05, we accept H0,hence, There is no significant difference between the Room Rent of Hotels with free breakfast and hotels without free breakfast.
+
+## T-test between RoomRent and IsNewYearEve
+Ho: There is no significant difference between the Room Rent of Hotels on normal Eve and New Year’s Eve.
+H1: The Room Rents of Hotels on normal Eve are cheaper than that on New Year’s Eve
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsNewYearEve==0],cities.df$RoomRent[cities.df$IsNewYearEve==1],alternative = "less")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room Rents of Hotels on normal Eve are cheaper than that on New Year’s Eve.
+
+## T-test between RoomRent and IsWeekend
+Ho:-There is no significant difference between the Room Rent of Hotels on weekdays and weekends.
+H1:-There is a significant difference between the Room Rent of Hotels on weekdays and weekends.
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsWeekend==0],cities.df$RoomRent[cities.df$IsWeekend==1])
+```
+
+Inference:-Since p-vale>0.05, we accept Ho,hence there is no significant difference between the Room Rent of Hotels on weekdays and weekends.
+
+## T-test between RoomRent and IsTouristDestination
+Ho: There is no significant difference between the Room Rent of Hotels in Tourist destinations and non tourist destinations.
+H1: The Room Rents of Hotels in Tourist destinations are greater than that in non tourist destinations
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsTouristDestination==0],cities.df$RoomRent[cities.df$IsTouristDestination==1],alternative = "less")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room.Rents of Hotels in Tourist destinations are greater than that in non tourist destinations
+
+## T-test between RoomRent and IsMetroCity
+Ho: There is no significant difference between the Room Rent of Hotels in non-metro cities and metro cities.
+H1: The Room Rent of hotels in non-metro cities are more expensive than that in metro cities.
+
+```{r}
+t.test(cities.df$RoomRent[cities.df$IsMetroCity==0],cities.df$RoomRent[cities.df$IsMetroCity==1],alternative = "greater")
+```
+
+Inference: Since p-value<0.05, we accept H1,hence,the Room Rents of Hotels in non-metro cities is more than that of metro cities.
+
+##DISCUSSION
+
+FROM THE ABOVE ANALYSIS, WE CAN SAY THAT THE FOLLOWING VARIABLES ARE SIGNIFICANT:
+
+1.IsMetroCity
+
+2.IsNewYearEve
+
+3.HasSwimmingPool
+
+4.IsTouristDestination
+
+##CONCLUSIONS
+
+The most significant factors include the location of a hotel whether it is in a tourist area or in a metropolitan city, the date of booking falls on a special occasion like New Year Eve, the review it has in terms of rating and the total capacity of the hotel that determines the price of a room.
+
+facility of swimming pool and the star rating will affect the hotel price, positively.
+
+Free wifi,free breakfast does not impact much.
+
+##REFERENCES
+
+
+1, www.youtube.com
+
+2. www.kaggle.com
+
+3. www.stackoverflow.com
+
+4. www.udemy.com
+
+5. www,coursera.org
+
+6. R documentation
+
+
+
+**This was the final project to be submitted under the internship of Prof SammerMathur (IIM Lucknow, CMU) as a part of his data analytics internship in R.**
+
+
